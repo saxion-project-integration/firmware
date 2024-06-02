@@ -1,1 +1,1 @@
-Contains the firmware for the ESP32 microcontroller.
+Contains firmware for the ESP32 microcontroller.
