@@ -12,8 +12,8 @@ namespace wifi {
     inline constexpr std::string ssid{""};
     inline constexpr std::string password{""};
 
-    //static_assert(!ssid.empty(), "`wifi::ssid` must be initialized with a non-empty string");
-    //static_assert(!password.empty(), "`wifi::password` must be be initialized with a non-empty string");
+    static_assert(!ssid.empty(), "`wifi::ssid` must be initialized with a non-empty string");
+    static_assert(!password.empty(), "`wifi::password` must be be initialized with a non-empty string");
 
     /**
      * Initialize Wi-Fi in station mode.

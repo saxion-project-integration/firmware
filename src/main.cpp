@@ -6,13 +6,10 @@
 #include "esp_http_client.h"
 #include "nvs_flash.h"
 
-#if 0
 #include <wifi.h>
 #include <log.h>
-#endif
 
 void setup() {
-#if 0
     // flash memory must be initialized before enabling Wi-Fi
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -29,7 +26,6 @@ void setup() {
 
     // log a message
     pi::log("a test message");
-#endif
 }
 
 void loop() {
