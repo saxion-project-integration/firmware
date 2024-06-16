@@ -3,6 +3,8 @@
  * @brief Contains function(s) for logging messages to the database.
  */
 
+#include <Arduino.h>
+
 #include <array>
 #include <cstdio>
 
@@ -22,9 +24,9 @@ namespace pi {
         /**
          * IP address of the web server to connect to.
          */
-        const std::string web_server_ip{""};
+        inline constexpr std::string web_server_ip{""};
 
-        static_assert(!ssid.empty(), "`pi::web_server_ip` must be initialized with a non-empty string");
+        static_assert(!web_server_ip.empty(), "`pi::web_server_ip` must be initialized with a non-empty string");
 
         /**
          * The port where the web server is listening to.
@@ -57,7 +59,7 @@ namespace pi {
             return ESP_OK;
         };
 
-        static const std::string url = "http://"s.append(web_server_socket).append("api/login");
+        static const std::string url = "http://"s.append(web_server_socket).append("/api/login");
 
         auto http_client = http::client_init({
             .url = url.c_str(),
@@ -80,6 +82,9 @@ namespace pi {
             "message": "%s"
         })", msg.c_str());
 
+        Serial.print("len: ");
+        Serial.println(len);
+
         // only use part of the buffer that is written to
         std::string_view body{buffer, static_cast<std::size_t>(len)};
 
@@ -88,9 +93,9 @@ namespace pi {
             return false;
         }
 
-        static const std::string url = "http://"s.append(web_server_socket).append("api/log");
+        static const std::string url = "http://"s.append(web_server_socket).append("/api/log");
 
-        static auto http_client = http::client_init({
+        auto http_client = http::client_init({
             .url = url.c_str(),
             .method = HTTP_METHOD_POST,
         });
