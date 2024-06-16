@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <cmath>
 #include <fall_detection.h>
+#include <log.h>
 
 namespace fall_detection {
     namespace {
@@ -22,6 +23,10 @@ namespace fall_detection {
         constexpr std::size_t interval_in_ms = 1000;
         constexpr float acceleration_treshold = 10.0f;
 
+
+        /**
+         * Initializes the MPU-6050.
+         */
         void init_mpu() {
             Wire.setPins(sda_pin, scl_pin);
 
@@ -35,25 +40,22 @@ namespace fall_detection {
             delay(100);
         }
 
+        /**
+         * Monitors readings from the MPU-6050 in order to detect falls.
+         */
         void monitor(void*) {
             while (true) {
                 Serial.println("monitor");
 
-                sensors_event_t a, g, temp;
+                static sensors_event_t a, g, temp;
                 mpu.getEvent(&a, &g, &temp);
-                
-                /*
-                Serial.print("Acceleration X: ");
-                Serial.print(a.acceleration.x);
-                Serial.print(", Y: ");
-                Serial.print(a.acceleration.y);
-                Serial.print(", Z: ");
-                Serial.print(a.acceleration.z);
-                Serial.println(" m/s^2");
-                */
 
-                if (std::abs(a.acceleration.y) > acceleration_treshold) {
-                    Serial.println("FALL DETECTED");
+                auto v = a.acceleration.v;
+                auto magnitude = std::sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+
+                if (magnitude > acceleration_treshold) {
+                    Serial.println("fall detected");
+                    pi::log("fall detected");
                 }
 
                 delay(interval_in_ms);
