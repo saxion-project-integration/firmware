@@ -19,16 +19,17 @@ void setup() {
 
     // initialize Wi-Fi in station mode
     if (!wifi::init_sta(wifi::ssid, wifi::password)) {
-        Serial.print("ERROR: failed to connect to WiFi. Check your credentials.");
+        Serial.println("ERROR: Failed to connect to WiFi. Check your credentials.");
+    } else {
+        Serial.println("Successfully established a WiFi connection.");
     }
 
     // log in to web server
     if (!pi::login("admin", "admin")) {
-        Serial.println("ERROR: failed to connect to Web server.");
+        Serial.println("ERROR: Failed to connect to Web server.");
+    } else {
+        Serial.println("Successfully connected to the web server.");
     }
-
-    // log a message
-    pi::log("a test message");
 
     fall_detection::start();
 }

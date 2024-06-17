@@ -20,8 +20,8 @@ namespace fall_detection {
 
         constexpr std::uint8_t sda_pin = 21;
         constexpr std::uint8_t scl_pin = 22;
-        constexpr std::size_t interval_in_ms = 1000;
-        constexpr float acceleration_treshold = 10.0f;
+        constexpr std::size_t interval_in_ms = 500;
+        constexpr float acceleration_treshold = 14.0f;
 
 
         /**
@@ -45,8 +45,6 @@ namespace fall_detection {
          */
         void monitor(void*) {
             while (true) {
-                Serial.println("monitor");
-
                 static sensors_event_t a, g, temp;
                 mpu.getEvent(&a, &g, &temp);
 
@@ -54,7 +52,7 @@ namespace fall_detection {
                 auto magnitude = std::sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 
                 if (magnitude > acceleration_treshold) {
-                    Serial.println("fall detected");
+                    Serial.println("Fall detected.");
                     pi::log("fall detected");
                 }
 
