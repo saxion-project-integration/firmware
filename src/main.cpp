@@ -31,6 +31,8 @@ void setup() {
         Serial.println("Successfully connected to the web server.");
     }
 
+    pi::log("hello world");
+
     fall_detection::start();
 }
 
