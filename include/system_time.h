@@ -13,7 +13,7 @@ namespace system_time {
     /**
      * Sets the local system's timezone to UTC+2
      */
-    void sync() {
+    inline void sync() {
         esp_sntp_config_t config = ESP_NETIF_SNTP_DEFAULT_CONFIG("pool.ntp.org");
         esp_netif_sntp_init(&config);
 
