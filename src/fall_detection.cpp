@@ -18,9 +18,10 @@ namespace fall_detection {
         TaskHandle_t monitor_handle{};
         Adafruit_MPU6050 mpu{};
 
-        constexpr std::uint8_t sda_pin = 21;
-        constexpr std::uint8_t scl_pin = 22;
+        constexpr std::uint8_t sda_pin = 15;
+        constexpr std::uint8_t scl_pin = 16;
         constexpr std::size_t interval_in_ms = 500;
+        constexpr std::size_t fall_timeout_in_ms = 5000;
         constexpr float acceleration_treshold = 14.0f;
 
 
@@ -54,6 +55,7 @@ namespace fall_detection {
                 if (magnitude > acceleration_treshold) {
                     Serial.println("Fall detected.");
                     pi::log("fall detected");
+                    delay(fall_timeout_in_ms);
                 }
 
                 delay(interval_in_ms);
@@ -63,7 +65,7 @@ namespace fall_detection {
 
     void start() {
         init_mpu();
-        xTaskCreate(monitor, "monitor", 2056, nullptr, 1, &monitor_handle);
+        xTaskCreate(monitor, "monitor", 4000, nullptr, 1, &monitor_handle);
     }
 }
 

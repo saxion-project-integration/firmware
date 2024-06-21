@@ -5,6 +5,7 @@
 #include <fall_detection.h>
 #include <wifi.h>
 #include <log.h>
+#include <system_time.h>
 
 void setup() {
     Serial.begin(9600);
@@ -32,7 +33,7 @@ void setup() {
     }
 
     pi::log("hello world");
-
+    system_time::sync();
     fall_detection::start();
 }
 
