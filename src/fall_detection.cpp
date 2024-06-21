@@ -3,13 +3,18 @@
  * @brief Contains function(s) that deal with fall detection.
  */
 
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <numeric>
+#include <span>
+#include <type_traits>
+
 #include <Arduino.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
-#include <cstdint>
-#include <cmath>
 #include <fall_detection.h>
 #include <log.h>
 
@@ -23,7 +28,6 @@ namespace fall_detection {
         constexpr std::size_t interval_in_ms = 500;
         constexpr std::size_t fall_timeout_in_ms = 5000;
         constexpr float acceleration_treshold = 14.0f;
-
 
         /**
          * Initializes the MPU-6050.
@@ -42,17 +46,29 @@ namespace fall_detection {
         }
 
         /**
+         * Magnitude of vector.
+         *
+         * @param vec Vector to calculate the magnitude of.
+         * @return Magnitude of vector.
+         */
+        template<typename T, std::size_t N>
+        requires std::is_arithmetic_v<T>
+        T magnitude(const T (&vec)[N]) {
+            return std::sqrt(std::accumulate(std::begin(vec), std::end(vec), T{}, [](auto sum, auto num) {
+                return sum + num * num;
+            }));
+        }
+
+        /**
          * Monitors readings from the MPU-6050 in order to detect falls.
          */
         void monitor(void*) {
             while (true) {
                 static sensors_event_t a, g, temp;
                 mpu.getEvent(&a, &g, &temp);
+                auto vec = a.acceleration.v;
 
-                auto v = a.acceleration.v;
-                auto magnitude = std::sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-
-                if (magnitude > acceleration_treshold) {
+                if (const auto& vec = a.acceleration.v; magnitude(vec) > acceleration_treshold) {
                     Serial.println("Fall detected.");
                     pi::log("fall detected");
                     delay(fall_timeout_in_ms);
