@@ -158,7 +158,7 @@ void updateTime() {
 
     const auto now = system_time::now();
     hh = now.hour;
-    ss = now.minute;
+    mm = now.minute;
     ss = now.second;
 
     tft.setCursor(15, 9);
