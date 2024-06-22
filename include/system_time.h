@@ -16,6 +16,15 @@
 
 namespace system_time {
     /**
+     * Represents a point in time within a day.
+     */
+    struct timestamp {
+        int hour;
+        int minute;
+        int second;
+    };
+
+    /**
      * Synchronizes the local system's time to UTC+2.
      *
      * @note A WiFi connection should be established before calling this function.
@@ -33,6 +42,23 @@ namespace system_time {
         time(&now);
         setenv("TZ", "UTC-2", 1);
         tzset();
+    }
+
+    /**
+     * Get the current system time.
+     *
+     * @return The current system time.
+     */
+    inline timestamp now() {
+        time_t now;
+        time(&now);
+        struct tm* tm = localtime(&now);
+
+        return timestamp{
+            .hour = tm->tm_hour,
+            .minute = tm->tm_min,
+            .second = tm->tm_sec,
+        };
     }
 }
 
