@@ -3,9 +3,12 @@
 #include "nvs_flash.h"
 
 #include <fall_detection.h>
-#include <wifi.h>
 #include <log.h>
+#include <pulse_oximeter.h>
 #include <system_time.h>
+#include <wifi.h>
+
+Pulse_Oximeter heart_rate_sensor{};
 
 void setup() {
     Serial.begin(9600);
@@ -35,8 +38,16 @@ void setup() {
     pi::log("hello world");
     system_time::sync();
     fall_detection::start();
+    heart_rate_sensor.start();
 }
 
 void loop() {
+    heart_rate_sensor.measure_bpm();
+    const auto bpm = heart_rate_sensor.bpm_value();
+    
+    // TODO: 
+    // display BPM on screen
+    // log BPM to database
+
     delay(500);
 }
