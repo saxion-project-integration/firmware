@@ -1,3 +1,8 @@
+/**
+ * @file system_time.h
+ * @brief Contains system time related function(s).
+ */
+
 #ifndef SYSTEM_TIME_H
 #define SYSTEM_TIME_H
 
@@ -11,7 +16,9 @@
 
 namespace system_time {
     /**
-     * Sets the local system's timezone to UTC+2
+     * Synchronizes the local system's time to UTC+2.
+     *
+     * @note A WiFi connection should be established before calling this function.
      */
     inline void sync() {
         esp_sntp_config_t config = ESP_NETIF_SNTP_DEFAULT_CONFIG("pool.ntp.org");
