@@ -26,7 +26,7 @@ namespace pi {
          */
         inline constexpr std::string web_server_ip{"192.168.1.249"};
 
-        //static_assert(!web_server_ip.empty(), "`pi::web_server_ip` must be initialized with a non-empty string");
+        static_assert(!web_server_ip.empty(), "`pi::web_server_ip` must be initialized with a non-empty string");
 
         /**
          * The port where the web server is listening to.
