@@ -30,6 +30,16 @@ namespace pi {
      * @return `true` if the operation was performed successfully, `false` otherwise.
      */
     bool log(const std::string& msg);
+
+    /*
+     * Log heart rate to the database.
+     *
+     * This function logs a heart rate to the database by making a HTTP request to the web server.
+     *
+     * @param bpm The heart rate in beats per minute.
+     * @return `true` if the operation was performed successfully, `false` otherwise.
+     */
+    bool log_heart_rate(int bpm);
 }
 
 #endif

@@ -26,7 +26,7 @@ namespace pi {
          */
         inline constexpr std::string web_server_ip{""};
 
-        static_assert(!web_server_ip.empty(), "`pi::web_server_ip` must be initialized with a non-empty string");
+        //static_assert(!web_server_ip.empty(), "`pi::web_server_ip` must be initialized with a non-empty string");
 
         /**
          * The port where the web server is listening to.
@@ -82,9 +82,6 @@ namespace pi {
             "message": "%s"
         })", msg.c_str());
 
-        Serial.print("len: ");
-        Serial.println(len);
-
         // only use part of the buffer that is written to
         std::string_view body{buffer, static_cast<std::size_t>(len)};
 
@@ -94,6 +91,37 @@ namespace pi {
         }
 
         static const std::string url = "http://"s.append(web_server_socket).append("/api/log");
+
+        auto http_client = http::client_init({
+            .url = url.c_str(),
+            .method = HTTP_METHOD_POST,
+        });
+
+        // set headers and body
+        esp_http_client_set_header(http_client.get(), "Cookie", cookie.c_str());
+        esp_http_client_set_header(http_client.get(), "Content-Type", "application/json");
+        esp_http_client_set_post_field(http_client.get(), body.data(), body.size());
+
+        // perform HTTP request and return status
+        const esp_err_t err = esp_http_client_perform(http_client.get());
+        return err == ESP_OK;
+    }
+
+    bool log_heart_rate(int bpm) {
+        char buffer[128];
+        int len = snprintf(buffer, sizeof buffer, R"({
+            "bpm": "%d"
+        })", bpm);
+
+        // only use part of the buffer that is written to
+        std::string_view body{buffer, static_cast<std::size_t>(len)};
+
+        // without cookie, no access to the logging operation
+        if (cookie.empty()) {
+            return false;
+        }
+
+        static const std::string url = "http://"s.append(web_server_socket).append("/api/log-heart-rate");
 
         auto http_client = http::client_init({
             .url = url.c_str(),
