@@ -87,6 +87,7 @@ void setup() {
     }
 
     pi::log("hello world");
+    pi::log_heart_rate(90);
     system_time::sync();
     fall_detection::start();
     sensor.start();
@@ -187,6 +188,15 @@ void updateHeartrate() {
     tft.setCursor(80, 9);
     tft.print("bpm");
     tft.display();
+
+
+    static auto prev = system_time::now();
+    const auto now = system_time::now();
+    // log every 5 mins
+    if (now.minute - prev.minute > 5) {
+        pi::log_heart_rate(sensor.bpm_value());
+        prev = now;
+    }
 }
 
 void updateBattery() {
